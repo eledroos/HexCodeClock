@@ -2,6 +2,8 @@
 
 HexCodeClock is a OS X Screensaver (I believe it works on 10.9 and and newer).
 
+![](https://github.com/eledroos/HexCodeClock/blob/master/img/HexCodeClock.gif)
+
 The idea is, that time would be formatted as HHmmss, but in 24-hour format. If we take that, turn it into a string, and run it though NSColor as hex, we get our HexCodeClock!
 
 For example:
