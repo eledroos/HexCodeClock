@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BE5EB9B21BD557170079D9AB /* SwiftColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5EB9B11BD557170079D9AB /* SwiftColors.swift */; settings = {ASSET_TAGS = (); }; };
-		BEB524501BD00873007D991E /* HexCodeClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5244F1BD00873007D991E /* HexCodeClockView.swift */; settings = {ASSET_TAGS = (); }; };
+		BE5EB9B21BD557170079D9AB /* SwiftColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5EB9B11BD557170079D9AB /* SwiftColors.swift */; };
+		BEB524501BD00873007D991E /* HexCodeClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB5244F1BD00873007D991E /* HexCodeClockView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +98,7 @@
 				TargetAttributes = {
 					BEB524411BD0079A007D991E = {
 						CreatedOnToolsVersion = 7.0.1;
+						LastSwiftMigration = 0830;
 					};
 				};
 			};
@@ -231,6 +232,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.eledroos.HexCodeClock;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				WRAPPER_EXTENSION = saver;
 			};
 			name = Debug;
@@ -245,6 +247,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.eledroos.HexCodeClock;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				WRAPPER_EXTENSION = saver;
 			};
 			name = Release;

@@ -28,8 +28,8 @@ import ScreenSaver
 
 class HexCodeClockView: ScreenSaverView {
     
-    let date: NSDate = NSDate()
-    let formatter: NSDateFormatter = NSDateFormatter()
+    let date: Date = Date()
+    let formatter: DateFormatter = DateFormatter()
     var datePrefix: String = ""
     var timePrefix: String = ""
     var time: String = ""
@@ -53,30 +53,30 @@ class HexCodeClockView: ScreenSaverView {
         super.stopAnimation()
     }
     
-    override func drawRect(rect: NSRect) {
-        super.drawRect(rect)
+    override func draw(_ rect: NSRect) {
+        super.draw(rect)
         formatter.dateFormat = "EEEE, dd MMMM YYYY"
-        datePrefix = formatter.stringFromDate(NSDate())
+        datePrefix = formatter.string(from: Date())
         formatter.dateFormat = "HHmmss"
-        timePrefix = formatter.stringFromDate(NSDate())
+        timePrefix = formatter.string(from: Date())
         formatter.dateFormat = "HHmmss"
-        timeForColor = formatter.stringFromDate(NSDate())
+        timeForColor = formatter.string(from: Date())
         
         color = NSColor(hexString: "#\(timeForColor)")! //sets color value to hex from current time
         color.set()
         NSRectFill(rect)
         
         time = "#\(timePrefix)" // Adds '#' for display
-        datePrefix.capitalizedString // Capitalizes each first letter
+        datePrefix.capitalized // Capitalizes each first letter
         
         let catTime: NSString = time as NSString // concatenate time as NSString to determineCGSize
         let catDate: NSString = datePrefix as NSString // concatenate date as NSString to determine CGSize
-        let timeSize: CGSize = catTime.sizeWithAttributes([NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 70.0)!])
-        let dateSize: CGSize = catDate.sizeWithAttributes([NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 25.0)!])
+        let timeSize: CGSize = catTime.size(withAttributes: [NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 70.0)!])
+        let dateSize: CGSize = catDate.size(withAttributes: [NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 25.0)!])
         
         // What the below does, is take half of the dimens. of the time String, and subtract that from half of the frame dimens.
-        time.drawAtPoint(NSMakePoint((self.frame.size.width/2 - timeSize.width/2), (self.frame.size.height/2 - timeSize.height/8)), withAttributes: [NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 70.0)!, NSForegroundColorAttributeName: NSColor.whiteColor()])
-        datePrefix.drawAtPoint(NSMakePoint((self.frame.size.width/2 - dateSize.width/2), (self.frame.size.height/2 - dateSize.height)), withAttributes: [NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 25.0)!, NSForegroundColorAttributeName: NSColor.whiteColor()])
+        time.draw(at: NSMakePoint((self.frame.size.width/2 - timeSize.width/2), (self.frame.size.height/2 - timeSize.height/8)), withAttributes: [NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 70.0)!, NSForegroundColorAttributeName: NSColor.white])
+        datePrefix.draw(at: NSMakePoint((self.frame.size.width/2 - dateSize.width/2), (self.frame.size.height/2 - dateSize.height)), withAttributes: [NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 25.0)!, NSForegroundColorAttributeName: NSColor.white])
     }
     
     override func animateOneFrame() {
