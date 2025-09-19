@@ -1,6 +1,6 @@
 # HexCodeClock
 
-HexCodeClock is a OS X Screensaver (I believe it works on 10.9 and and newer).
+HexCodeClock is a macOS Screensaver that displays the current time as a hex color code, with the background color changing based on the time.
 
 ![](https://github.com/eledroos/HexCodeClock/blob/master/img/HexCodeClock.gif)
 
@@ -14,33 +14,43 @@ For example:
 - Add a pound sign so the time becomes a hexcolor: [#151723](http://www.colorhexa.com/151723)
 
 ### Version
-1.0
+2.0 - Updated for macOS 26 (Tahoe) compatibility
+
+### Features
+- Swift 5.0
+- San Francisco font support
+- Light and Dark mode support
+- macOS 14.0+ compatibility
+- Smooth color transitions
+
+### Requirements
+- macOS 14.0 or later
+- Xcode 16.0 or later (for building from source)
 
 ### Installation
 
-This was written using Xcode 7.0.1 and Swift 2.0. 
+**Option 1: Install from built .saver file**
+1. Download the latest `HexCodeClock.saver` file
+2. Double-click the **.saver** file to install
+3. Go to **System Settings > Lock Screen** to preview and enable the screensaver
 
-To install, double click the **.saver** file, and then go to **Desktop & Screen Saver** to preview the Screen Saver. 
+**Option 2: Build from source**
+1. Open `HexCodeClock.xcodeproj` in Xcode 16.0+
+2. Build the project (⌘+B)
+3. In the **Products** folder, right-click on **HexCodeClock.saver** and click: *Show in Finder*
+4. Double-click the **.saver** file to install
+5. Go to **System Settings > Lock Screen** to preview and enable the screensaver
 
-If you'd like to compile and run from Xcode, what you need to do is:
+### What's New in v2.0
+- Complete rewrite using modern Swift syntax
+- Updated for macOS 26 (Tahoe) compatibility
+- Added San Francisco font support
+- Implemented light/dark mode awareness
+- Improved performance and reliability
+- Updated minimum system requirement to macOS 14.0
 
-1. Quit **System Preferences**
-2. Build the project in **Xcode** (⌘+B)
-3. In the **Products** folder, right click on **HexCodeClock.saver** and click: *Open in Finder*.
-4. Here you'll find the **.saver** file, double click to install. If System Preferences prompts you to replace the existing screen saver, press **Replace**
-5. That's it!
+### Development
+This project was originally written using Xcode 7.0.1 and Swift 2.0, and has been completely modernized for current macOS versions.
 
-
-
-
-### To-Do!
-
- - Change Font to San Francisco
- - Build Light Variant (current version is too damn dark)
-
-License
-----
-
+### License
 MIT
-
-

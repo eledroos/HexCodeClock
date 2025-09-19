@@ -4,6 +4,7 @@
 //
 //  Created by Nasser Eledroos on 10/15/15.
 //  Copyright © 2015 Nasser Eledroos. All rights reserved.
+//  Updated for macOS 26 compatibility
 //  
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -28,17 +29,18 @@ import ScreenSaver
 
 class HexCodeClockView: ScreenSaverView {
     
-    let date: NSDate = NSDate()
-    let formatter: NSDateFormatter = NSDateFormatter()
-    var datePrefix: String = ""
-    var timePrefix: String = ""
-    var time: String = ""
-    var timeForColor: String = ""
-    var color: NSColor = NSColor()
+    private let dateFormatter = DateFormatter()
+    private let timeFormatter = DateFormatter()
+    private let colorFormatter = DateFormatter()
     
     override init(frame: NSRect, isPreview: Bool) {
         super.init(frame: frame, isPreview: isPreview)!
         self.animationTimeInterval = 1
+        
+        // Configure formatters
+        dateFormatter.dateFormat = "EEEE, dd MMMM yyyy"
+        timeFormatter.dateFormat = "HHmmss"
+        colorFormatter.dateFormat = "HHmmss"
     }
     
     required init?(coder: NSCoder) {
@@ -53,45 +55,61 @@ class HexCodeClockView: ScreenSaverView {
         super.stopAnimation()
     }
     
-    override func drawRect(rect: NSRect) {
-        super.drawRect(rect)
-        formatter.dateFormat = "EEEE, dd MMMM YYYY"
-        datePrefix = formatter.stringFromDate(NSDate())
-        formatter.dateFormat = "HHmmss"
-        timePrefix = formatter.stringFromDate(NSDate())
-        formatter.dateFormat = "HHmmss"
-        timeForColor = formatter.stringFromDate(NSDate())
+    override func draw(_ rect: NSRect) {
+        super.draw(rect)
         
-        color = NSColor(hexString: "#\(timeForColor)")! //sets color value to hex from current time
-        color.set()
-        NSRectFill(rect)
+        let now = Date()
+        let dateString = dateFormatter.string(from: now)
+        let timeString = timeFormatter.string(from: now)
+        let colorString = colorFormatter.string(from: now)
         
-        time = "#\(timePrefix)" // Adds '#' for display
-        datePrefix.capitalizedString // Capitalizes each first letter
+        // Set background color from time
+        if let color = NSColor(hexString: "#\(colorString)") {
+            color.set()
+            rect.fill()
+        }
         
-        let catTime: NSString = time as NSString // concatenate time as NSString to determineCGSize
-        let catDate: NSString = datePrefix as NSString // concatenate date as NSString to determine CGSize
-        let timeSize: CGSize = catTime.sizeWithAttributes([NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 70.0)!])
-        let dateSize: CGSize = catDate.sizeWithAttributes([NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 25.0)!])
+        // Determine text color based on appearance
+        let textColor = effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? 
+            NSColor.white : NSColor.black
         
-        // What the below does, is take half of the dimens. of the time String, and subtract that from half of the frame dimens.
-        time.drawAtPoint(NSMakePoint((self.frame.size.width/2 - timeSize.width/2), (self.frame.size.height/2 - timeSize.height/8)), withAttributes: [NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 70.0)!, NSForegroundColorAttributeName: NSColor.whiteColor()])
-        datePrefix.drawAtPoint(NSMakePoint((self.frame.size.width/2 - dateSize.width/2), (self.frame.size.height/2 - dateSize.height)), withAttributes: [NSFontAttributeName: NSFont(name: "HelveticaNeue-UltraLight", size: 25.0)!, NSForegroundColorAttributeName: NSColor.whiteColor()])
+        // Draw time
+        let timeDisplay = "#\(timeString)"
+        let timeAttributes: [NSAttributedString.Key: Any] = [
+            .font: NSFont(name: "SF Pro Display", size: 70) ?? NSFont.systemFont(ofSize: 70, weight: .ultraLight),
+            .foregroundColor: textColor
+        ]
+        
+        let timeSize = timeDisplay.size(withAttributes: timeAttributes)
+        let timePoint = NSPoint(
+            x: (frame.width - timeSize.width) / 2,
+            y: (frame.height - timeSize.height) / 2 + 20
+        )
+        timeDisplay.draw(at: timePoint, withAttributes: timeAttributes)
+        
+        // Draw date
+        let dateAttributes: [NSAttributedString.Key: Any] = [
+            .font: NSFont(name: "SF Pro Display", size: 25) ?? NSFont.systemFont(ofSize: 25, weight: .ultraLight),
+            .foregroundColor: textColor
+        ]
+        
+        let dateSize = dateString.size(withAttributes: dateAttributes)
+        let datePoint = NSPoint(
+            x: (frame.width - dateSize.width) / 2,
+            y: (frame.height - dateSize.height) / 2 - 40
+        )
+        dateString.draw(at: datePoint, withAttributes: dateAttributes)
     }
     
     override func animateOneFrame() {
-        needsDisplay = true // The subclass lets drawRect: perform the drawing 
-                            // in which case animateOneFrame needs to call 
-                            // [Obj-C] setNeedsDisplay: with an argument of true
+        needsDisplay = true
     }
     
-    override func hasConfigureSheet() -> Bool {
+    func hasConfigureSheet() -> Bool {
         return false
     }
     
-    override func configureSheet() -> NSWindow? {
+    func configureSheet() -> NSWindow? {
         return nil
     }
-    
-
 }

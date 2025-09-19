@@ -1,6 +1,7 @@
 //  SwiftColors.swift
 //
 // Copyright (c) 2014 Doan Truong Thi
+// Updated for macOS 26 compatibility
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +24,7 @@
 #if os(iOS)
     import UIKit
     typealias SWColor = UIColor
-    #else
+#else
     import Cocoa
     typealias SWColor = NSColor
 #endif
@@ -33,84 +34,74 @@ public extension SWColor {
     Create non-autoreleased color with in the given hex string
     Alpha will be set as 1 by default
     
-    :param:   hexString
-    :returns: color with the given hex string
+    - Parameter hexString: The hex color string (e.g., "#FF0000" or "FF0000")
+    - Returns: color with the given hex string
     */
-    public convenience init?(hexString: String) {
+    convenience init?(hexString: String) {
         self.init(hexString: hexString, alpha: 1.0)
     }
     
     /**
     Create non-autoreleased color with in the given hex string and alpha
     
-    :param:   hexString
-    :param:   alpha
-    :returns: color with the given hex string and alpha
+    - Parameter hexString: The hex color string (e.g., "#FF0000" or "FF0000")
+    - Parameter alpha: The alpha value (0.0 to 1.0)
+    - Returns: color with the given hex string and alpha
     */
-    public convenience init?(hexString: String, alpha: Float) {
+    convenience init?(hexString: String, alpha: Float) {
         var hex = hexString
         
         // Check for hash and remove the hash
         if hex.hasPrefix("#") {
-            hex = hex.substringFromIndex(hex.startIndex.advancedBy(1))
+            hex = String(hex.dropFirst())
         }
         
-        if (hex.rangeOfString("(^[0-9A-Fa-f]{6}$)|(^[0-9A-Fa-f]{3}$)", options: .RegularExpressionSearch) != nil) {
-            
-            // Deal with 3 character Hex strings
-            
-            if hex.characters.count == 3 {
-                let redHex   = hex.substringToIndex(hex.startIndex.advancedBy(1))
-                let greenHex = hex.substringWithRange(Range<String.Index>(start: hex.startIndex.advancedBy(1), end: hex.startIndex.advancedBy(2)))
-                let blueHex  = hex.substringFromIndex(hex.startIndex.advancedBy(2))
-                
-                hex = redHex + redHex + greenHex + greenHex + blueHex + blueHex
-            }
-            
-            let redHex = hex.substringToIndex(hex.startIndex.advancedBy(2))
-            let greenHex = hex.substringWithRange(Range<String.Index>(start: hex.startIndex.advancedBy(2), end: hex.startIndex.advancedBy(4)))
-            let blueHex = hex.substringWithRange(Range<String.Index>(start: hex.startIndex.advancedBy(4), end: hex.startIndex.advancedBy(6)))
-            
-            var redInt:   CUnsignedInt = 0
-            var greenInt: CUnsignedInt = 0
-            var blueInt:  CUnsignedInt = 0
-            
-            NSScanner(string: redHex).scanHexInt(&redInt)
-            NSScanner(string: greenHex).scanHexInt(&greenInt)
-            NSScanner(string: blueHex).scanHexInt(&blueInt)
-            
-            self.init(red: CGFloat(redInt) / 255.0, green: CGFloat(greenInt) / 255.0, blue: CGFloat(blueInt) / 255.0, alpha: CGFloat(alpha))
-        }
-        else {
-            // Note:
-            // The swift 1.1 compiler is currently unable to destroy partially initialized classes in all cases,
-            // so it disallows formation of a situation where it would have to.  We consider this a bug to be fixed
-            // in future releases, not a feature. -- Apple Forum
-            self.init()
+        // Validate hex string
+        guard hex.range(of: "^[0-9A-Fa-f]{6}$|^[0-9A-Fa-f]{3}$", options: .regularExpression) != nil else {
             return nil
         }
+        
+        // Handle 3-character hex strings
+        if hex.count == 3 {
+            let chars = Array(hex)
+            hex = String([chars[0], chars[0], chars[1], chars[1], chars[2], chars[2]])
+        }
+        
+        // Parse hex values using modern Swift
+        guard let red = Int(String(hex.prefix(2)), radix: 16),
+              let green = Int(String(hex.dropFirst(2).prefix(2)), radix: 16),
+              let blue = Int(String(hex.suffix(2)), radix: 16) else {
+            return nil
+        }
+        
+        self.init(
+            red: CGFloat(red) / 255.0,
+            green: CGFloat(green) / 255.0,
+            blue: CGFloat(blue) / 255.0,
+            alpha: CGFloat(alpha)
+        )
     }
     
     /**
     Create non-autoreleased color with in the given hex value
     Alpha will be set as 1 by default
     
-    :param:   hex
-    :returns: color with the given hex value
+    - Parameter hex: The hex color value (e.g., 0xFF0000)
+    - Returns: color with the given hex value
     */
-    public convenience init?(hex: Int) {
+    convenience init?(hex: Int) {
         self.init(hex: hex, alpha: 1.0)
     }
     
     /**
     Create non-autoreleased color with in the given hex value and alpha
     
-    :param:   hex
-    :param:   alpha
-    :returns: color with the given hex value and alpha
+    - Parameter hex: The hex color value (e.g., 0xFF0000)
+    - Parameter alpha: The alpha value (0.0 to 1.0)
+    - Returns: color with the given hex value and alpha
     */
-    public convenience init?(hex: Int, alpha: Float) {
-        let hexString = NSString(format: "%2X", hex)
-        self.init(hexString: hexString as String , alpha: alpha)
+    convenience init?(hex: Int, alpha: Float) {
+        let hexString = String(format: "%02X", hex)
+        self.init(hexString: hexString, alpha: alpha)
     }
 }
